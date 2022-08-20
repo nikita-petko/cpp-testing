@@ -7,12 +7,13 @@
 #include "jitter.hpp"
 #include "random.hpp"
 
+#define CEILING_FOR_MAX_ATTEMPTS 10
+
 class exponential_backoff
 {
 private:
 	typedef double (*next_random_double_func)(void);
 
-	static const int	_ceiling_for_max_attempts = 10;
 	static random_impl* _random;
 
 	static auto _calculate_backoff(uint8_t					 attempt,
@@ -22,11 +23,11 @@ private:
 								   const jitter&			 jitter,
 								   next_random_double_func&& nextRandomDouble) -> const time_t
 	{
-		if (maxAttempts > _ceiling_for_max_attempts)
+		if (maxAttempts > CEILING_FOR_MAX_ATTEMPTS)
 		{
 			throw argument_out_of_range_exception("maxAttempts",
 												  maxAttempts,
-												  format("maxAttempts must be less than or equal to %d.", _ceiling_for_max_attempts));
+												  format("maxAttempts must be less than or equal to %d.", CEILING_FOR_MAX_ATTEMPTS));
 		}
 
 		if (attempt > maxAttempts)
