@@ -1,8 +1,8 @@
 #pragma once
 
 #include <future>
-#include "execution_context.hpp"
 #include "argument_null_exception.hpp"
+#include "execution_context.hpp"
 
 template<typename TInput, typename TOutput>
 class pipeline_handler

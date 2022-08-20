@@ -2,7 +2,7 @@
 
 enum class jitter
 {
-    none,
-    full,
-    equal
+	none,
+	full,
+	equal
 };

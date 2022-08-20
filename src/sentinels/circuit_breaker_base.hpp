@@ -55,7 +55,7 @@ public:
 		bool flag = _is_tripped.exchange(1) == 1;
 		if (!flag)
 		{
-			auto now = get_now();
+			auto now   = get_now();
 			_trip_date = &now;
 		}
 
