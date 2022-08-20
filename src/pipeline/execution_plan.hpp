@@ -33,7 +33,7 @@ public:
 
 	const pipeline_handler<TInput, TOutput>** get_handlers() const noexcept { return _handlers.data(); }
 
-	auto remove_handler(int index) -> void
+	auto remove_handler(const int& index) -> void
 	{
 		if (index >= _handlers.size() || index < 0)
 		{
@@ -111,7 +111,7 @@ public:
 		insert_handler(index, handler);
 	}
 
-	auto insert_handler(int index, pipeline_handler<TInput, TOutput>* handler) -> void
+	auto insert_handler(const int& index, pipeline_handler<TInput, TOutput>* handler) -> void
 	{
 		if (index < 0 || index > _handlers.size())
 		{
@@ -150,7 +150,7 @@ public:
 
 	auto clear_handlers() -> void { _handlers.clear(); }
 
-	auto execute(TInput input) -> TOutput
+	auto execute(const TInput& input) -> TOutput
 	{
 		if (_handlers.size() == 0)
 		{
@@ -162,7 +162,7 @@ public:
 		return context.get_output();
 	}
 
-	auto execute_async(TInput input) -> std::future<TOutput>
+	auto execute_async(const TInput& input) -> std::future<TOutput>
 	{
 		if (_handlers.size() == 0)
 		{

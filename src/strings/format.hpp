@@ -6,7 +6,7 @@
 
 template<typename... Args>
 std::string
-format(const std::string& format, Args... args)
+format(const std::string& format, Args&&... args)
 {
 	int size_s = std::snprintf(nullptr, 0, format.c_str(), args...) + 1;  // Extra space for '\0'
 	if (size_s <= 0)

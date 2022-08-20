@@ -8,11 +8,11 @@
 class service_sentinel
 {
 private:
-	typedef time_t (*_monitor_interval_getter_func)();
-	typedef bool (*_health_check_func)();
+	typedef time_t (*monitor_interval_getter_func)();
+	typedef bool (*health_check_func)();
 
-	_monitor_interval_getter_func _monitor_interval_getter;
-	_health_check_func			  _health_check;
+	monitor_interval_getter_func _monitor_interval_getter;
+	health_check_func			 _health_check;
 
 	// asio
 	asio::io_context*	_io_context;
@@ -52,7 +52,7 @@ private:
 public:
 	auto is_healthly() const noexcept -> bool { return _is_healthly; }
 
-	service_sentinel(_health_check_func healthChecker, _monitor_interval_getter_func monitorIntervalGetter, bool isHealthy = true)
+	service_sentinel(health_check_func&& healthChecker, monitor_interval_getter_func&& monitorIntervalGetter, bool isHealthy = true)
 	{
 		_health_check			 = healthChecker;
 		_monitor_interval_getter = monitorIntervalGetter;

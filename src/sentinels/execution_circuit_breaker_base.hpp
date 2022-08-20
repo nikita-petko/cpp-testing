@@ -28,7 +28,7 @@ private:
 	auto is_time_for_retry() const -> bool { return get_now() >= _next_retry; }
 
 protected:
-	virtual auto get_retry_interval() const -> time_t = 0;
+	virtual auto get_retry_interval() const -> const time_t = 0;
 
 private:
 	auto should_retry() -> bool

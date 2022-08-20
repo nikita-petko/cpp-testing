@@ -13,14 +13,14 @@ private:
 	std::chrono::system_clock::time_point* _trip_date = nullptr;
 
 protected:
-	virtual auto get_now() const -> std::chrono::system_clock::time_point { return std::chrono::system_clock::now(); }
+	virtual auto get_now() const -> const std::chrono::system_clock::time_point { return std::chrono::system_clock::now(); }
 
 private:
 	std::atomic<int> _is_tripped;
 
 public:
 	// the name of the circuit breaker
-	virtual auto get_name() const -> std::string = 0;
+	virtual auto get_name() const -> const std::string& = 0;
 
 	// the date when the circuit breaker was tripped
 	auto get_trip_date() const -> std::chrono::system_clock::time_point* { return _trip_date; }

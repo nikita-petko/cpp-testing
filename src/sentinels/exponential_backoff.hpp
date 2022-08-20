@@ -10,17 +10,17 @@
 class exponential_backoff
 {
 private:
-	typedef double (*_next_random_double_func)(void);
+	typedef double (*next_random_double_func)(void);
 
 	static const int	_ceiling_for_max_attempts = 10;
 	static random_impl* _random;
 
-	static auto _calculate_backoff(uint8_t					attempt,
-								   uint8_t					maxAttempts,
-								   time_t					baseDelay,
-								   time_t					maxDelay,
-								   jitter					jitter,
-								   _next_random_double_func nextRandomDouble) -> time_t
+	static auto _calculate_backoff(uint8_t					 attempt,
+								   const uint8_t&			 maxAttempts,
+								   const time_t&			 baseDelay,
+								   const time_t&			 maxDelay,
+								   const jitter&			 jitter,
+								   next_random_double_func&& nextRandomDouble) -> const time_t
 	{
 		if (maxAttempts > _ceiling_for_max_attempts)
 		{
@@ -56,8 +56,11 @@ private:
 	}
 
 public:
-	static auto calculate_backoff(uint8_t attempt, uint8_t maxAttempts, time_t baseDelay, time_t maxDelay, jitter jitter = jitter::none)
-		-> time_t
+	static auto calculate_backoff(uint8_t		 attempt,
+								  const uint8_t& maxAttempts,
+								  const time_t&	 baseDelay,
+								  const time_t&	 maxDelay,
+								  const jitter&	 jitter = jitter::none) -> const time_t
 	{
 		return _calculate_backoff(attempt, maxAttempts, baseDelay, maxDelay, jitter, []() { return _random->next_double(); });
 	}

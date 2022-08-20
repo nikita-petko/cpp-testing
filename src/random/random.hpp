@@ -15,9 +15,9 @@ private:
 	//
 	// Private Constants
 	//
-	static const int32_t _MBIG	= INT_MAX;
-	static const int32_t _MSEED = 161803398;
-	static const int32_t _MZ	= 0;
+	static constexpr int32_t _MBIG	= INT_MAX;
+	static constexpr int32_t _MSEED = 161803398;
+	static constexpr int32_t _MZ	= 0;
 
 	//
 	// Member Variables
@@ -39,9 +39,9 @@ private:
 	//
 
 public:
-	random_impl() : random_impl((int32_t)time(0)) {}
+	inline constexpr random_impl() : random_impl((int32_t)time(0)) {}
 
-	random_impl(int32_t seed)
+	inline constexpr random_impl(const int32_t& seed)
 	{
 		int32_t ii;
 		int32_t mj, mk;
@@ -80,7 +80,6 @@ public:
 
 		_inext	= 0;
 		_inextp = 21;
-		seed	= 1;
 	}
 
 	//
@@ -94,7 +93,7 @@ public:
 	  **Exceptions: None
 	  ==============================================================================*/
 protected:
-	virtual double sample()
+	inline constexpr virtual double sample()
 	{
 		// Including this division at the end gives us significantly improved
 		// random number distribution.
@@ -102,7 +101,7 @@ protected:
 	}
 
 private:
-	int32_t _internal_sample()
+	inline constexpr int32_t _internal_sample()
 	{
 		int32_t retVal;
 		int32_t locINext  = _inext;
@@ -148,10 +147,10 @@ public:
 	**Arguments: None
 	**Exceptions: None.
 	==============================================================================*/
-	virtual int32_t next() { return _internal_sample(); }
+	inline virtual constexpr int32_t next() { return _internal_sample(); }
 
 private:
-	double _get_sample_for_large_range()
+	inline constexpr double _get_sample_for_large_range()
 	{
 		// The distribution of double value returned by Sample
 		// is not distributed well enough for a large range.
@@ -180,7 +179,7 @@ public:
 	**           maxValue -- One greater than the greatest legal return value.
 	**Exceptions: None.
 	==============================================================================*/
-	virtual int32_t next(int32_t minValue, int32_t maxValue)
+	inline virtual constexpr int32_t next(const int32_t& minValue, const int32_t& maxValue)
 	{
 		if (minValue > maxValue)
 		{
@@ -203,7 +202,7 @@ public:
 	  **Arguments: maxValue -- One more than the greatest legal return value.
 	  **Exceptions: None.
 	  ==============================================================================*/
-	virtual int32_t next(int32_t maxValue)
+	inline virtual constexpr int32_t next(const int32_t& maxValue)
 	{
 		if (maxValue < 0)
 		{
@@ -218,7 +217,7 @@ public:
 	  **Arguments: None
 	  **Exceptions: None
 	  ==============================================================================*/
-	virtual double next_double() { return sample(); }
+	inline virtual constexpr double next_double() { return sample(); }
 
 	/*==================================NextBytes===================================
 	  **Action:  Fills the byte array with random bytes [0..0x7f].  The entire array is filled.
