@@ -30,10 +30,16 @@ if is_os("linux") or is_os("macosx") then
     add_cxxflags("-Wno-unused-value")
     add_cxxflags("-Wno-unused-variable")
     add_cxxflags("-Wzero-as-null-pointer-constant")
+    add_cxxflags("-fconcepts")
+    add_cxxflags("-Wsizeof-array-argument")
 
     -- pthread
     add_ldflags("-pthread")
     add_ldflags("-ldl")
+
+    -- gcc with symbols
+    add_cxxflags("-g")
+    add_ldflags("-g")
 end
 
 -- Turn use of undefined cpp macros into errors

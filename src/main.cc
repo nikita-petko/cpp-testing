@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <boost/core/demangle.hpp>
 #include "circuit_breaker.hpp"
 #include "circuit_breaker_exception.hpp"
 #include "exception.hpp"
@@ -100,6 +101,13 @@ main([[maybe_unused]] int32_t argc, [[maybe_unused]] const char* argv[], [[maybe
 
 	plan->execute(r->next(1, 100));
 	plan->execute_async(r->next(1, 100)).wait();
+
+	auto handlers = plan->get_handlers();
+
+	for (int i = 0; i < plan->get_handler_count(); i++)
+	{
+		printf("Handler %d: %s\n", i, boost::core::demangle(typeid(*handlers[i]).name()).c_str());
+	}
 
 	const auto backoff = exponential_backoff::calculate_backoff(2, 10, 1000, 10000);
 

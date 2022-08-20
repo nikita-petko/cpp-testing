@@ -103,7 +103,7 @@ protected:
 private:
 	inline constexpr int32_t _internal_sample()
 	{
-		int32_t retVal;
+		int32_t retVal	  = 0;
 		int32_t locINext  = _inext;
 		int32_t locINextp = _inextp;
 
