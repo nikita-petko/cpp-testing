@@ -139,15 +139,6 @@ main([[maybe_unused]] int32_t argc, [[maybe_unused]] const char* argv[], [[maybe
 
 	ecb->reset();
 
-	try
-	{
-		throw argument_null_exception("ecb");
-	}
-	catch (exception& e)
-	{
-		printf("exception: %s\n", e.what());
-	}
-
 	delete plan;
 	delete r;
 	delete cb;
