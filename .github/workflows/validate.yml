@@ -102,6 +102,12 @@ jobs:
         env:
           VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
+      - name: Build
+        run: |
+          xmake build -v -y
+        env:
+          VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
+
   linux-build:
     needs: cancel-old-build
     name: Build & Test Linux
@@ -166,6 +172,12 @@ jobs:
         env:
           VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
+      - name: Build
+        run: |
+          xmake build -v -y
+        env:
+          VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
+
   macos-build:
     needs: cancel-old-build
     name: Build & Test MacOS
@@ -222,5 +234,11 @@ jobs:
       - name: Config
         run: |
           xmake config -v -y -m ${{ matrix.config }} --arch=${{ matrix.arch }}
+        env:
+          VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
+
+      - name: Build
+        run: |
+          xmake build -v -y
         env:
           VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
