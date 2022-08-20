@@ -39,9 +39,9 @@ private:
 	//
 
 public:
-	inline constexpr random_impl() : random_impl((int32_t)time(0)) {}
+	inline random_impl() : random_impl((int32_t)time(0)) {}
 
-	inline constexpr random_impl(const int32_t& seed)
+	inline random_impl(const int32_t& seed)
 	{
 		int32_t ii;
 		int32_t mj, mk;
