@@ -90,12 +90,12 @@ jobs:
         env:
           VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-      - name: Upload template-app-win64
+      - name: Upload cpp-testing-win64
         if: ${{ github.ref_name == 'master' && matrix.config == 'release' }}
         uses: actions/upload-artifact@v3
         with:
-          name: template-app-win64
-          path: build/template-app-win64.zip
+          name: cpp-testing-win64
+          path: build/cpp-testing-win64.zip
 
       - name: Config
         run: |
@@ -154,12 +154,12 @@ jobs:
         env:
           VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-      - name: Upload template-app-linux
+      - name: Upload cpp-testing-linux
         if: ${{ github.ref_name == 'master' && matrix.config == 'release' }}
         uses: actions/upload-artifact@v3
         with:
-          name: template-app-linux
-          path: build/template-app-linux.zip
+          name: cpp-testing-linux
+          path: build/cpp-testing-linux.zip
 
       - name: Config
         run: |
@@ -213,12 +213,12 @@ jobs:
         env:
           VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-      - name: Upload template-app-macos
+      - name: Upload cpp-testing-macos
         if: ${{ github.ref_name == 'master' && matrix.config == 'release' }}
         uses: actions/upload-artifact@v3
         with:
-          name: template-app-macos
-          path: build/template-app-macos.zip
+          name: cpp-testing-macos
+          path: build/cpp-testing-macos.zip
 
       - name: Config
         run: |

@@ -45,11 +45,11 @@ jobs:
       env:
         VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-    - name: Upload template-app-win64
+    - name: Upload cpp-testing-win64
       uses: actions/upload-artifact@v3
       with:
-        name: template-app-win64
-        path: build/template-app-win64.zip
+        name: cpp-testing-win64
+        path: build/cpp-testing-win64.zip
 
   bundle-linux:
     runs-on: ubuntu-latest
@@ -91,11 +91,11 @@ jobs:
       env:
         VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-    - name: Upload template-app-linux
+    - name: Upload cpp-testing-linux
       uses: actions/upload-artifact@v3
       with:
-        name: template-app-linux
-        path: build/template-app-linux.zip
+        name: cpp-testing-linux
+        path: build/cpp-testing-linux.zip
 
   bundle-macos:
    runs-on: macos-latest
@@ -132,11 +132,11 @@ jobs:
      env:
        VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-   - name: Upload template-app-macos
+   - name: Upload cpp-testing-macos
      uses: actions/upload-artifact@v3
      with:
-       name: template-app-macos
-       path: build/template-app-macos.zip
+       name: cpp-testing-macos
+       path: build/cpp-testing-macos.zip
 
   create-release:
     runs-on: ubuntu-latest
@@ -150,19 +150,19 @@ jobs:
     - name: Download Linux artifacts
       uses: actions/download-artifact@v1
       with:
-        name: template-app-linux
+        name: cpp-testing-linux
         path: linux
 
     - name: Download Windows artifacts
       uses: actions/download-artifact@v1
       with:
-        name: template-app-win64
+        name: cpp-testing-win64
         path: win64
 
     - name: Download MacOS artifacts
       uses: actions/download-artifact@v1
       with:
-        name: template-app-macos
+        name: cpp-testing-macos
         path: macos
 
     - name: Create Release
@@ -176,6 +176,6 @@ jobs:
         draft: false
         prerelease: ${{ github.ref_name != 'master' }}
         files: |
-          linux/template-app-linux.zip
-          win64/template-app-win64.zip
-          macos/template-app-macos.zip
+          linux/cpp-testing-linux.zip
+          win64/cpp-testing-win64.zip
+          macos/cpp-testing-macos.zip
