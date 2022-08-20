@@ -12,8 +12,8 @@ class exponential_backoff
 private:
 	typedef double (*_next_random_double_func)(void);
 
-	static const int _ceiling_for_max_attempts = 10;
-	static random_impl*	 _random;
+	static const int	_ceiling_for_max_attempts = 10;
+	static random_impl* _random;
 
 	static auto _calculate_backoff(uint8_t					attempt,
 								   uint8_t					maxAttempts,
