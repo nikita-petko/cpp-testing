@@ -82,20 +82,6 @@ jobs:
             ${{ github.workspace }}\.vcpkg\installed
           key: ${{ runner.os }}-${{ matrix.config }}-${{env.VCPKG_VERSION}}-${{ hashFiles('xmake.lua') }}-${{ matrix.arch }}-v5
 
-      - name: Bundle
-        if: ${{ github.ref_name == 'master' && matrix.config == 'release' }}
-        run: |
-          xmake bundle -v -y
-        env:
-          VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
-
-      - name: Upload cpp-testing-win64
-        if: ${{ github.ref_name == 'master' && matrix.config == 'release' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: cpp-testing-win64
-          path: build/cpp-testing-win64.zip
-
       - name: Config
         run: |
           xmake config -v -y -m ${{ matrix.config }} --arch=${{ matrix.arch }}
@@ -152,20 +138,6 @@ jobs:
             ${{ github.workspace }}/.vcpkg/installed
           key: ${{ runner.os }}-${{ matrix.config }}-${{env.VCPKG_VERSION}}-${{ hashFiles('xmake.lua') }}-${{ matrix.arch }}-v5
 
-      - name: Bundle
-        if: ${{ github.ref_name == 'master' && matrix.config == 'release' }}
-        run: |
-          xmake bundle -v -y
-        env:
-          VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
-
-      - name: Upload cpp-testing-linux
-        if: ${{ github.ref_name == 'master' && matrix.config == 'release' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: cpp-testing-linux
-          path: build/cpp-testing-linux.zip
-
       - name: Config
         run: |
           xmake config -v -y -m ${{ matrix.config }} --arch=${{ matrix.arch }}
@@ -216,20 +188,6 @@ jobs:
           path: |
             ${{ github.workspace }}/.vcpkg/installed
           key: ${{ runner.os }}-${{ matrix.config }}-${{env.VCPKG_VERSION}}-${{ hashFiles('xmake.lua') }}-${{ matrix.arch }}-v5
-
-      - name: Bundle
-        if: ${{ github.ref_name == 'master' && matrix.config == 'release' }}
-        run: |
-          xmake bundle -v -y
-        env:
-          VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
-
-      - name: Upload cpp-testing-macos
-        if: ${{ github.ref_name == 'master' && matrix.config == 'release' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: cpp-testing-macos
-          path: build/cpp-testing-macos.zip
 
       - name: Config
         run: |

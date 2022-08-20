@@ -33,4 +33,6 @@ target("cpp-testing")
         add_ldflags("-framework Security")
         add_ldflags("-framework SystemConfiguration")
         add_syslinks("bsm")
+
+        add_defines("_GNU_SOURCE=1")
     end

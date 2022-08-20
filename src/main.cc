@@ -6,8 +6,13 @@
 #include "execution_circuit_breaker.hpp"
 #include "execution_plan.hpp"
 #include "exponential_backoff.hpp"
+#include "inttypes.h"
 #include "pipeline_handler.hpp"
 #include "random.hpp"
+
+#if !defined(_WIN32)
+#	include <unistd.h>
+#endif
 
 class test_handler : public pipeline_handler<int, int>
 {
@@ -42,9 +47,13 @@ public:
 };
 
 auto
-sleep(time_t milliseconds) -> void
+sleep_for(time_t milliseconds) -> void
 {
+#if defined(_WIN32)
 	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+#else
+	usleep(milliseconds * 1000);
+#endif
 }
 
 /**
@@ -69,7 +78,7 @@ main([[maybe_unused]] int32_t argc, [[maybe_unused]] const char* argv[], [[maybe
 	plan->execute(123);
 	plan->execute_async(456).wait();
 
-	random* r = new random();
+	random_impl* r = new random_impl();
 
 	for (int32_t i = 0; i < 10; i++)
 	{
@@ -85,13 +94,13 @@ main([[maybe_unused]] int32_t argc, [[maybe_unused]] const char* argv[], [[maybe
 
 	time_t backoff = exponential_backoff::calculate_backoff(2, 10, 1000, 10000);
 
-	printf("backoff: %lld\n", backoff);
+	printf("backoff: %" PRId64 "\n", backoff);
 
 	circuit_breaker* cb = new circuit_breaker("cb");
 
 	cb->trip();
 
-	sleep(backoff);
+	sleep_for(backoff);
 
 	try
 	{
@@ -111,13 +120,13 @@ main([[maybe_unused]] int32_t argc, [[maybe_unused]] const char* argv[], [[maybe
 
 	try
 	{
-		ecb->execute([]() -> void { throw std::exception("test"); });
+		ecb->execute([]() -> void { throw exception("test"); });
 	}
 	catch (std::exception& e)
 	{
 	}
 
-	sleep(1500);
+	sleep_for(1500);
 
 	try
 	{

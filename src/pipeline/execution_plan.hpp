@@ -40,7 +40,7 @@ public:
 			throw argument_exception("index does not exist in handlers.", "index");
 		}
 
-		pipeline_handler* handler = _handlers[index];
+		pipeline_handler<TInput, TOutput>* handler = _handlers[index];
 		if (index > 0)
 		{
 			_handlers[index - 1]->set_next_handler(handler->get_next_handler());

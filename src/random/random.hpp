@@ -6,22 +6,25 @@
 #include "argument_null_exception.hpp"
 #include "argument_out_of_range_exception.hpp"
 
-class random
+/**
+ * @brief This is named random_impl to avoid a name collision with the POSIX random function.
+ */
+class random_impl
 {
 private:
 	//
 	// Private Constants
 	//
-	static const int _MBIG	= INT_MAX;
-	static const int _MSEED = 161803398;
-	static const int _MZ	= 0;
+	static const int32_t _MBIG	= INT_MAX;
+	static const int32_t _MSEED = 161803398;
+	static const int32_t _MZ	= 0;
 
 	//
 	// Member Variables
 	//
-	int _inext;
-	int _inextp;
-	int _seed_array[56];
+	int32_t _inext;
+	int32_t _inextp;
+	int32_t _seed_array[56];
 
 	//
 	// Public Constants
@@ -36,21 +39,21 @@ private:
 	//
 
 public:
-	random() : random((int)time(0)) {}
+	random_impl() : random_impl((int32_t)time(0)) {}
 
-	random(int seed)
+	random_impl(int32_t seed)
 	{
-		int ii;
-		int mj, mk;
+		int32_t ii;
+		int32_t mj, mk;
 
 		// Initialize our seed array.
 		// This algorithm comes from Numerical Recipes in C (2nd Ed.)
-		int subtraction = (seed == INT_MIN) ? INT_MAX : std::abs(seed);
-		mj				= _MSEED - subtraction;
-		_seed_array[55] = mj;
-		mk				= 1;
+		int32_t subtraction = (seed == INT_MIN) ? INT_MAX : std::abs(seed);
+		mj					= _MSEED - subtraction;
+		_seed_array[55]		= mj;
+		mk					= 1;
 
-		for (int i = 1; i < 55; i++)
+		for (int32_t i = 1; i < 55; i++)
 		{
 			// Apparently the range [1..55] is special (Knuth) and so we're wasting the 0'th position.
 			ii				= (21 * i) % 55;
@@ -63,9 +66,9 @@ public:
 			mj = _seed_array[ii];
 		}
 
-		for (int k = 1; k < 5; k++)
+		for (int32_t k = 1; k < 5; k++)
 		{
-			for (int i = 1; i < 56; i++)
+			for (int32_t i = 1; i < 56; i++)
 			{
 				_seed_array[i] -= _seed_array[1 + (i + 30) % 55];
 				if (_seed_array[i] < 0)
@@ -99,11 +102,11 @@ protected:
 	}
 
 private:
-	int _internal_sample()
+	int32_t _internal_sample()
 	{
-		int retVal;
-		int locINext  = _inext;
-		int locINextp = _inextp;
+		int32_t retVal;
+		int32_t locINext  = _inext;
+		int32_t locINextp = _inextp;
 
 		if (++locINext >= 56)
 		{
@@ -141,11 +144,11 @@ private:
 
 public:
 	/*=====================================Next=====================================
-	**Returns: An int [0..Int32.MaxValue)
+	**Returns: An int32_t [0..Int32.MaxValue)
 	**Arguments: None
 	**Exceptions: None.
 	==============================================================================*/
-	virtual int next() { return _internal_sample(); }
+	virtual int32_t next() { return _internal_sample(); }
 
 private:
 	double _get_sample_for_large_range()
@@ -155,7 +158,7 @@ private:
 		// If we use Sample for a range [Int32.MinValue..Int32.MaxValue)
 		// We will end up getting even numbers only.
 
-		int result = _internal_sample();
+		int32_t result = _internal_sample();
 
 		// Note we can't use addition here. The distribution will be bad if we do that.
 		bool negative = (_internal_sample() % 2 == 0) ? true : false;  // decide the sign based on second sample
@@ -172,12 +175,12 @@ private:
 
 public:
 	/*=====================================Next=====================================
-	**Returns: An int [minvalue..maxvalue)
+	**Returns: An int32_t [minvalue..maxvalue)
 	**Arguments: minValue -- the least legal value for the Random number.
 	**           maxValue -- One greater than the greatest legal return value.
 	**Exceptions: None.
 	==============================================================================*/
-	virtual int next(int minValue, int maxValue)
+	virtual int32_t next(int32_t minValue, int32_t maxValue)
 	{
 		if (minValue > maxValue)
 		{
@@ -187,27 +190,27 @@ public:
 		int64_t range = (int64_t)maxValue - minValue;
 		if (range <= (int64_t)INT_MAX)
 		{
-			return ((int)(sample() * range) + minValue);
+			return ((int32_t)(sample() * range) + minValue);
 		}
 		else
 		{
-			return ((int)((int64_t)(_get_sample_for_large_range() * range) + minValue));
+			return ((int32_t)((int64_t)(_get_sample_for_large_range() * range) + minValue));
 		}
 	}
 
 	/*=====================================Next=====================================
-	  **Returns: An int [0..maxValue)
+	  **Returns: An int32_t [0..maxValue)
 	  **Arguments: maxValue -- One more than the greatest legal return value.
 	  **Exceptions: None.
 	  ==============================================================================*/
-	virtual int next(int maxValue)
+	virtual int32_t next(int32_t maxValue)
 	{
 		if (maxValue < 0)
 		{
 			throw argument_out_of_range_exception("maxValue");
 		}
 
-		return (int)(sample() * maxValue);
+		return (int32_t)(sample() * maxValue);
 	}
 
 	/*=====================================Next=====================================
@@ -230,9 +233,9 @@ public:
 			throw argument_null_exception("buffer");
 		}
 
-		for (int i = 0; i < sizeof(buffer) / sizeof(buffer[0]); i++)
+		for (int32_t i = 0; i < sizeof(buffer) / sizeof(buffer[0]); i++)
 		{
-			buffer[i] = (uint8_t)(_internal_sample() % (int)(0x7f + 1));
+			buffer[i] = (uint8_t)(_internal_sample() % (int32_t)(0x7f + 1));
 		}
 	}
 };
