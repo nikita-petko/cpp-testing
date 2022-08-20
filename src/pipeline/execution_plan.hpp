@@ -32,7 +32,7 @@ public:
 	execution_plan() : _handlers(std::vector<pipeline_handler<TInput, TOutput>*>()) {}
 
 	const pipeline_handler<TInput, TOutput>* const* get_handlers() const noexcept { return _handlers.data(); }
-	const int get_handler_count() const noexcept { return _handlers.size(); }
+	const int										get_handler_count() const noexcept { return _handlers.size(); }
 
 	auto remove_handler(const int& index) -> void
 	{
