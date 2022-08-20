@@ -29,6 +29,9 @@ if is_os("linux") or is_os("macosx") then
     add_cxxflags("-Wno-unused-private-field")
     add_cxxflags("-Wno-unused-value")
     add_cxxflags("-Wno-unused-variable")
+
+    -- pthread
+    add_cxxflags("-pthread")
 end
 
 -- Turn use of undefined cpp macros into errors
