@@ -1,3 +1,3 @@
-# XMake Template App
+# C++ 20 Testing
 
-Template for building XMake Executables.
+This repository is dedicated to testing out C++20.
