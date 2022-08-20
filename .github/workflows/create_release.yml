@@ -9,134 +9,147 @@ on:
       - "xmake.lua"
 
 jobs:
+  cancel-old-build:
+    name: Cancel previous builds
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
   bundle-windows:
     runs-on: windows-latest
+    needs: cancel-old-build
     timeout-minutes: 15
     if: "!contains(toJSON(github.event.commits.*.message), '[SKIP CI]')"
     env:
       VCPKG_VERSION: 2022.03.10
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Setup xmake
-      uses: xmake-io/github-action-setup-xmake@v1
-      with:
-        xmake-version: 2.6.4
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: 2.6.4
 
-    - name: Installing vcpkg
-      run: |
-        git clone -b ${{env.VCPKG_VERSION}} --single-branch https://github.com/Microsoft/vcpkg.git .vcpkg
-        cd .vcpkg
-        .\bootstrap-vcpkg.bat
-        .\vcpkg.exe integrate install
-        cd ..
+      - name: Installing vcpkg
+        run: |
+          git clone -b ${{env.VCPKG_VERSION}} --single-branch https://github.com/Microsoft/vcpkg.git .vcpkg
+          cd .vcpkg
+          .\bootstrap-vcpkg.bat
+          .\vcpkg.exe integrate install
+          cd ..
 
-    - name: Cache vcpkg
-      uses: actions/cache@v2
-      with:
-        path: |
-          ${{ github.workspace }}\.vcpkg\installed
-        key: ${{ runner.os }}-release-${{env.VCPKG_VERSION}}-${{ hashFiles('xmake.lua') }}-x64-v5
+      - name: Cache vcpkg
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ github.workspace }}\.vcpkg\installed
+          key: ${{ runner.os }}-release-${{env.VCPKG_VERSION}}-${{ hashFiles('xmake.lua') }}-x64-v5
 
-    - name: Bundle
-      run: |
-        xmake bundle -v -y
-      env:
-        VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
+      - name: Bundle
+        run: |
+          xmake bundle -v -y
+        env:
+          VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-    - name: Upload cpp-testing-win64
-      uses: actions/upload-artifact@v3
-      with:
-        name: cpp-testing-win64
-        path: build/cpp-testing-win64.zip
+      - name: Upload cpp-testing-win64
+        uses: actions/upload-artifact@v3
+        with:
+          name: cpp-testing-win64
+          path: build/cpp-testing-win64.zip
 
   bundle-linux:
     runs-on: ubuntu-latest
-    if: "!contains(toJSON(github.event.commits.*.message), '[SKIP CI]')"
+    needs: cancel-old-build
     timeout-minutes: 15
+    if: "!contains(toJSON(github.event.commits.*.message), '[SKIP CI]')"
     env:
       VCPKG_VERSION: 2022.03.10
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up GCC 11
-      uses: egor-tensin/setup-gcc@v1
-      with:
-        version: 11
-        platform: x64
+      - name: Set up GCC 11
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 11
+          platform: x64
 
-    - name: Setup xmake
-      uses: xmake-io/github-action-setup-xmake@v1
-      with:
-        xmake-version: 2.6.4
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: 2.6.4
 
-    - name: Installing vcpkg
-      run: |
-        git clone -b ${{env.VCPKG_VERSION}} --single-branch https://github.com/Microsoft/vcpkg.git .vcpkg
-        cd .vcpkg
-        ./bootstrap-vcpkg.sh
-        cd ..
-    - name: Cache vcpkg
-      uses: actions/cache@v2
-      with:
-        path: |
-          ${{ github.workspace }}/.vcpkg/installed
-        key: ${{ runner.os }}-release-${{env.VCPKG_VERSION}}-${{ hashFiles('xmake.lua') }}-x64-v5
+      - name: Installing vcpkg
+        run: |
+          git clone -b ${{env.VCPKG_VERSION}} --single-branch https://github.com/Microsoft/vcpkg.git .vcpkg
+          cd .vcpkg
+          ./bootstrap-vcpkg.sh
+          cd ..
+      - name: Cache vcpkg
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ github.workspace }}/.vcpkg/installed
+          key: ${{ runner.os }}-release-${{env.VCPKG_VERSION}}-${{ hashFiles('xmake.lua') }}-x64-v5
 
-    - name: Bundle
-      run: |
-        xmake bundle -v -y
-      env:
-        VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
+      - name: Bundle
+        run: |
+          xmake bundle -v -y
+        env:
+          VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-    - name: Upload cpp-testing-linux
-      uses: actions/upload-artifact@v3
-      with:
-        name: cpp-testing-linux
-        path: build/cpp-testing-linux.zip
+      - name: Upload cpp-testing-linux
+        uses: actions/upload-artifact@v3
+        with:
+          name: cpp-testing-linux
+          path: build/cpp-testing-linux.zip
 
   bundle-macos:
-   runs-on: macos-latest
-   if: "!contains(toJSON(github.event.commits.*.message), '[SKIP CI]')"
-   timeout-minutes: 15
-   env:
-     VCPKG_VERSION: 2022.03.10
+    runs-on: macos-latest
+    needs: cancel-old-build
+    timeout-minutes: 15
+    if: "!contains(toJSON(github.event.commits.*.message), '[SKIP CI]')"
+    env:
+      VCPKG_VERSION: 2022.03.10
 
-   steps:
-   - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-   - name: Setup xmake
-     uses: xmake-io/github-action-setup-xmake@v1
-     with:
-       xmake-version: 2.6.4
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: 2.6.4
 
-   - name: Installing vcpkg
-     run: |
-       git clone -b ${{env.VCPKG_VERSION}} --single-branch https://github.com/Microsoft/vcpkg.git .vcpkg
-       cd .vcpkg
-       ./bootstrap-vcpkg.sh
-       cd ..
+      - name: Installing vcpkg
+        run: |
+          git clone -b ${{env.VCPKG_VERSION}} --single-branch https://github.com/Microsoft/vcpkg.git .vcpkg
+          cd .vcpkg
+          ./bootstrap-vcpkg.sh
+          cd ..
 
-   - name: Cache vcpkg
-     uses: actions/cache@v2
-     with:
-       path: |
-         ${{ github.workspace }}/.vcpkg/installed
-       key: ${{ runner.os }}-release-${{env.VCPKG_VERSION}}-${{ hashFiles('xmake.lua') }}-x64-v5
+      - name: Cache vcpkg
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ github.workspace }}/.vcpkg/installed
+          key: ${{ runner.os }}-release-${{env.VCPKG_VERSION}}-${{ hashFiles('xmake.lua') }}-x64-v5
 
-   - name: Bundle
-     run: |
-       xmake bundle -v -y
-     env:
-       VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
+      - name: Bundle
+        run: |
+          xmake bundle -v -y
+        env:
+          VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-   - name: Upload cpp-testing-macos
-     uses: actions/upload-artifact@v3
-     with:
-       name: cpp-testing-macos
-       path: build/cpp-testing-macos.zip
+      - name: Upload cpp-testing-macos
+        uses: actions/upload-artifact@v3
+        with:
+          name: cpp-testing-macos
+          path: build/cpp-testing-macos.zip
 
   create-release:
     runs-on: ubuntu-latest
@@ -145,37 +158,37 @@ jobs:
     needs: [bundle-linux, bundle-windows, bundle-macos]
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Download Linux artifacts
-      uses: actions/download-artifact@v1
-      with:
-        name: cpp-testing-linux
-        path: linux
+      - name: Download Linux artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: cpp-testing-linux
+          path: linux
 
-    - name: Download Windows artifacts
-      uses: actions/download-artifact@v1
-      with:
-        name: cpp-testing-win64
-        path: win64
+      - name: Download Windows artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: cpp-testing-win64
+          path: win64
 
-    - name: Download MacOS artifacts
-      uses: actions/download-artifact@v1
-      with:
-        name: cpp-testing-macos
-        path: macos
+      - name: Download MacOS artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: cpp-testing-macos
+          path: macos
 
-    - name: Create Release
-      id: create_release
-      uses: softprops/action-gh-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: build-${{github.run_id}}
-        generate_release_notes: true
-        draft: false
-        prerelease: ${{ github.ref_name != 'master' }}
-        files: |
-          linux/cpp-testing-linux.zip
-          win64/cpp-testing-win64.zip
-          macos/cpp-testing-macos.zip
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: build-${{github.run_id}}
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ github.ref_name != 'master' }}
+          files: |
+            linux/cpp-testing-linux.zip
+            win64/cpp-testing-win64.zip
+            macos/cpp-testing-macos.zip

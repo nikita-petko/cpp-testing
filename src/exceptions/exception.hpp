@@ -61,9 +61,6 @@ public:
 	{
 	}
 
-	exception(const exception&)					   = delete;
-	auto operator=(const exception&) -> exception& = delete;
-
 	exception(const std::exception& e)
 	: _inner_exception(NULL)
 	, _message(e.what())
