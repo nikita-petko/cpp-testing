@@ -11,3 +11,9 @@ build/
 # Visual Studio Project Files
 .vs/
 vsxmake2022/
+
+# Ninja Temp
+
+.ninja_deps
+.ninja_log
+build.ninja
