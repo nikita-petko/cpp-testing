@@ -21,18 +21,18 @@ private:
 	exception_interval_for_tripping_func _exception_interval_for_tripping;
 	utc_now_func						 _utc_now;
 
-	const std::string& _name;
+	std::string _name;
 
 	std::atomic<int>					  _exception_count;
 	std::chrono::system_clock::time_point _exception_count_interval_end;
 
 private:
-	threshold_execution_circuit_breaker(const std::string&					   name,
-										failure_detector_func&&				   failure_detector,
-										retry_interval_func&&				   retry_interval,
-										exception_count_for_tripping_func&&	   exception_count_for_tripping,
-										exception_interval_for_tripping_func&& exception_interval_for_tripping,
-										utc_now_func&&						   utc_now)
+	threshold_execution_circuit_breaker(std::string							 name,
+										failure_detector_func				 failure_detector,
+										retry_interval_func					 retry_interval,
+										exception_count_for_tripping_func	 exception_count_for_tripping,
+										exception_interval_for_tripping_func exception_interval_for_tripping,
+										utc_now_func						 utc_now)
 	: _name(name)
 	, _failure_detector(failure_detector)
 	, _retry_interval(retry_interval)
@@ -45,11 +45,11 @@ private:
 	}
 
 public:
-	threshold_execution_circuit_breaker(const std::string&					   name,
-										failure_detector_func&&				   failure_detector,
-										retry_interval_func&&				   retry_interval,
-										exception_count_for_tripping_func&&	   exception_count_for_tripping,
-										exception_interval_for_tripping_func&& exception_interval_for_tripping)
+	threshold_execution_circuit_breaker(std::string							 name,
+										failure_detector_func				 failure_detector,
+										retry_interval_func					 retry_interval,
+										exception_count_for_tripping_func	 exception_count_for_tripping,
+										exception_interval_for_tripping_func exception_interval_for_tripping)
 	: threshold_execution_circuit_breaker(name,
 										  failure_detector,
 										  retry_interval,
@@ -62,9 +62,9 @@ public:
 	auto get_name() const -> const std::string& override { return _name; }
 
 protected:
-	auto get_retry_interval() const -> const time_t& override { return _retry_interval(); }
+	auto get_retry_interval() const -> const time_t override { return _retry_interval(); }
 
-	auto get_now() const -> const std::chrono::system_clock::time_point& override { return _utc_now(); }
+	auto get_now() const -> const std::chrono::system_clock::time_point override { return _utc_now(); }
 
 private:
 	auto reset_exception_count() -> void

@@ -52,7 +52,7 @@ private:
 public:
 	auto is_healthly() const noexcept -> bool { return _is_healthly; }
 
-	service_sentinel(health_check_func&& healthChecker, monitor_interval_getter_func&& monitorIntervalGetter, bool isHealthy = true)
+	service_sentinel(health_check_func healthChecker, monitor_interval_getter_func monitorIntervalGetter, bool isHealthy = true)
 	{
 		_health_check			 = healthChecker;
 		_monitor_interval_getter = monitorIntervalGetter;

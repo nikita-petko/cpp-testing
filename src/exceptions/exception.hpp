@@ -17,21 +17,14 @@
 class exception : public std::exception
 {
 private:
-	std::string& _constructed_message;
-
-	std::shared_ptr<exception>	   _inner_exception;
-	boost::stacktrace::stacktrace* _stacktrace;
+	std::shared_ptr<const exception> _inner_exception;
+	boost::stacktrace::stacktrace*	 _stacktrace;
 
 protected:
 	std::string _message;
 
-	auto _construct_message() const noexcept -> std::string&
+	auto _construct_message() const noexcept -> std::string
 	{
-		if (!_constructed_message.empty())
-		{
-			return _constructed_message;
-		}
-
 		auto message	= get_message();
 		auto stacktrace = *_stacktrace;
 		auto stack		= boost::stacktrace::to_string(stacktrace);
@@ -42,14 +35,12 @@ protected:
 			auto inner_message = _inner_exception->what();
 
 			// like this:
-			_constructed_message = format("%s ---> " NEWLINE "%s ---> " NEWLINE "%s", message.c_str(), inner_message, stack.c_str());
+			return format("%s ---> " NEWLINE "%s ---> " NEWLINE "%s", message.c_str(), inner_message, stack.c_str());
 		}
 		else
 		{
-			_constructed_message = format("%s" NEWLINE "%s", message.c_str(), stack.c_str());
+			return format("%s" NEWLINE "%s", message.c_str(), stack.c_str());
 		}
-
-		return _constructed_message;
 	}
 
 public:
@@ -57,7 +48,6 @@ public:
 	: _inner_exception(NULL)
 	, _message(format("Exception of type '%s' was thrown.", typeid(*this).name()))
 	, _stacktrace(new boost::stacktrace::stacktrace(2, static_cast<size_t>(-1)))
-	, _constructed_message(*new std::string())
 	{
 	}
 
@@ -65,26 +55,23 @@ public:
 	: _inner_exception(NULL)
 	, _message(e.what())
 	, _stacktrace(new boost::stacktrace::stacktrace(2, static_cast<size_t>(-1)))
-	, _constructed_message(*new std::string())
 	{
 	}
-	exception(const std::string& message)
+	exception(std::string message)
 	: _inner_exception(NULL)
 	, _message(message)
 	, _stacktrace(new boost::stacktrace::stacktrace(2, static_cast<size_t>(-1)))
-	, _constructed_message(*new std::string())
 	{
 	}
-	exception(const std::string& message, exception* inner_exception)
+	exception(std::string message, const exception* inner_exception)
 	: _inner_exception(inner_exception)
 	, _message(message)
 	, _stacktrace(new boost::stacktrace::stacktrace(2, static_cast<size_t>(-1)))
-	, _constructed_message(*new std::string())
 	{
 	}
 
 	virtual auto get_message() const noexcept -> const std::string { return _message; }
-	auto		 get_inner_exception() const noexcept -> const std::shared_ptr<exception> { return _inner_exception; }
+	auto		 get_inner_exception() const noexcept -> const std::shared_ptr<const exception> { return _inner_exception; }
 	auto		 get_stacktrace() const noexcept -> const boost::stacktrace::stacktrace* { return _stacktrace; }
 	auto		 what() const noexcept -> const char* override { return _construct_message().c_str(); }
 };

@@ -156,6 +156,15 @@ main([[maybe_unused]] int32_t argc, [[maybe_unused]] const char* argv[], [[maybe
 
 	ecb->reset();
 
+	try
+	{
+		throw argument_out_of_range_exception("HAHHAHAH", 10, "HAAAA");
+	}
+	catch (exception& e)
+	{
+		printf("%s\n", e.what());
+	}
+
 	delete plan;
 	delete r;
 	delete cb;

@@ -8,9 +8,9 @@ private:
 	TOutput _output;
 
 public:
-	execution_context(const TInput& input) : _input(input), _output() {}
+	execution_context(TInput input) : _input(input), _output() {}
 
 	TInput	get_input() const noexcept { return _input; }
 	TOutput get_output() const noexcept { return _output; }
-	void	set_output(const TOutput& value) noexcept { _output = value; }
+	void	set_output(TOutput value) noexcept { _output = value; }
 };

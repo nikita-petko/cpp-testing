@@ -151,7 +151,7 @@ public:
 
 	auto clear_handlers() -> void { _handlers.clear(); }
 
-	auto execute(const TInput& input) -> TOutput
+	auto execute(TInput input) -> TOutput
 	{
 		if (_handlers.size() == 0)
 		{
@@ -159,11 +159,11 @@ public:
 		}
 
 		execution_context<TInput, TOutput> context(input);
-		_handlers[0]->invoke(&context);
+		_handlers.front()->invoke(&context);
 		return context.get_output();
 	}
 
-	auto execute_async(const TInput& input) -> std::future<TOutput>
+	auto execute_async(TInput input) -> std::future<TOutput>
 	{
 		if (_handlers.size() == 0)
 		{
@@ -171,7 +171,7 @@ public:
 		}
 
 		execution_context<TInput, TOutput> context(input);
-		std::shared_future<void>		   future = _handlers[0]->invoke_async(&context);
+		std::shared_future<void>		   future = _handlers.front()->invoke_async(&context);
 		return std::async(std::launch::async, [context, future]() -> TOutput {
 			future.wait();
 			return context.get_output();

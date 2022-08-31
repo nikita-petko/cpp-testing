@@ -1,5 +1,7 @@
 #pragma once
 
+#include <inttypes.h>
+#include <optional>
 #include <string>
 #include "argument_exception.hpp"
 
@@ -7,36 +9,38 @@ class argument_out_of_range_exception : public argument_exception
 {
 private:
 	// default message
-	const char* _default_message = "Specified argument was out of the range of valid values.";
+	static const char* const _default_message;
 
-	void* _actual_value;
+	std::optional<int64_t> _actual_value;
 
 public:
 	argument_out_of_range_exception() : argument_exception(_default_message) {}
 
-	argument_out_of_range_exception(const std::string& param_name) : argument_exception(_default_message, param_name) {}
+	argument_out_of_range_exception(std::string param_name) : argument_exception(_default_message, param_name) {}
 
-	argument_out_of_range_exception(const std::string& param_name, const std::string& message) : argument_exception(message, param_name) {}
+	argument_out_of_range_exception(std::string param_name, std::string message) : argument_exception(message, param_name) {}
 
-	argument_out_of_range_exception(const std::string& message, exception* inner_exception) : argument_exception(message, inner_exception)
-	{
-	}
+	argument_out_of_range_exception(std::string message, const exception* inner_exception) : argument_exception(message, inner_exception) {}
 
-	argument_out_of_range_exception(const std::string& param_name, auto actual_value, const std::string& message)
+	argument_out_of_range_exception(std::string param_name, std::optional<int64_t> actual_value, std::string message)
 	: argument_exception(message, param_name)
-	, _actual_value(std::addressof(actual_value))
+	, _actual_value(actual_value)
 	{
 	}
 
 	auto get_message() const noexcept -> const std::string override
 	{
-		if (_actual_value != nullptr)
+		auto message = argument_exception::get_message();
+
+		if (_actual_value.has_value())
 		{
-			return format("%s" NEWLINE "Actual value was %s.", _message.c_str(), _actual_value);
+			return format("%s" NEWLINE "Actual value was %" PRId64 ".", message.c_str(), _actual_value.value());
 		}
 
-		return _message;
+		return message;
 	}
 
-	auto get_actual_value() const -> void* { return _actual_value; }
+	auto get_actual_value() const -> const std::optional<int64_t>& { return _actual_value; }
 };
+
+const char* const argument_out_of_range_exception::_default_message = "Specified argument was out of the range of valid values.";

@@ -12,10 +12,10 @@ class circuit_breaker_exception : public exception
 private:
 	std::string _circuit_breaker_name;
 
-	std::chrono::system_clock::time_point* _trip_date;
+	const std::chrono::system_clock::time_point* _trip_date;
 
 public:
-	circuit_breaker_exception(const std::string& circuitBreakerName, std::chrono::system_clock::time_point* tripDate)
+	circuit_breaker_exception(std::string circuitBreakerName, const std::chrono::system_clock::time_point* tripDate)
 	: _circuit_breaker_name(circuitBreakerName)
 	, _trip_date(tripDate)
 	{

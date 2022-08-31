@@ -7,7 +7,7 @@
 class execution_circuit_breaker : public execution_circuit_breaker_base
 {
 private:
-	const std::string& _name;
+	std::string _name;
 
 	typedef bool (*failure_detector_func)(std::exception& e);
 	typedef time_t (*retry_interval_func)();
@@ -16,7 +16,7 @@ private:
 	retry_interval_func	  _retry_interval;
 
 public:
-	execution_circuit_breaker(const std::string& name, failure_detector_func&& failure_detector, retry_interval_func&& retry_interval)
+	execution_circuit_breaker(std::string name, failure_detector_func failure_detector, retry_interval_func retry_interval)
 	: _name(name)
 	, _failure_detector(failure_detector)
 	, _retry_interval(retry_interval)
