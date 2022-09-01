@@ -1,21 +1,21 @@
 #pragma once
 
 #include <chrono>
+#include <exception.hpp>
+#include <format.hpp>
 #include <string>
-#include "exception.hpp"
-#include "format.hpp"
 
-using duration = std::chrono::system_clock::duration;
+namespace com::rbx::sentinels {
 
 class circuit_breaker_exception : public exception
 {
 private:
 	std::string _circuit_breaker_name;
 
-	const std::chrono::system_clock::time_point* _trip_date;
+	std::chrono::system_clock::time_point* _trip_date;
 
 public:
-	circuit_breaker_exception(std::string circuitBreakerName, const std::chrono::system_clock::time_point* tripDate)
+	circuit_breaker_exception(std::string circuitBreakerName, std::chrono::system_clock::time_point* tripDate)
 	: _circuit_breaker_name(circuitBreakerName)
 	, _trip_date(tripDate)
 	{
@@ -27,6 +27,8 @@ public:
 		auto tripped	 = _trip_date == nullptr ? now : *_trip_date;
 		auto trippedTime = std::chrono::duration<double>(now - tripped).count();
 
-		return format("CircuitBreaker Error: %s has been tripped for %.5f seconds.", _circuit_breaker_name.c_str(), trippedTime);
+		return com::format("CircuitBreaker Error: %s has been tripped for %.5f seconds.", _circuit_breaker_name.c_str(), trippedTime);
 	}
 };
+
+}  // namespace com::rbx::sentinels

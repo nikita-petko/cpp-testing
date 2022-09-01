@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <string>
 
+namespace com {
+
 template<typename... Args>
 auto
 format(const std::string& format, Args&&... args) -> std::string
@@ -20,3 +22,5 @@ format(const std::string& format, Args&&... args) -> std::string
 
 	return std::string(buf.get(), buf.get() + size - 1);  // We don't want the '\0' inside
 }
+
+}  // namespace com

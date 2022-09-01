@@ -1,15 +1,16 @@
 #pragma once
 
-#include <exception>
 #include <string>
 #include "execution_circuit_breaker_base.hpp"
 
-class execution_circuit_breaker : public execution_circuit_breaker_base
+namespace com::rbx::sentinels {
+
+class execution_circuit_breaker : public com::rbx::sentinels::execution_circuit_breaker_base
 {
 private:
 	std::string _name;
 
-	typedef bool (*failure_detector_func)(std::exception& e);
+	typedef bool (*failure_detector_func)(com::exception& e);
 	typedef time_t (*retry_interval_func)();
 
 	failure_detector_func _failure_detector;
@@ -26,7 +27,9 @@ public:
 	auto get_name() const -> const std::string& override { return _name; }
 
 protected:
-	auto should_trip(std::exception& e) -> bool override { return _failure_detector(e); }
+	auto should_trip(com::exception& e) -> bool override { return _failure_detector(e); }
 
 	auto get_retry_interval() const -> const time_t override { return _retry_interval(); }
 };
+
+}  // namespace com::rbx::sentinels

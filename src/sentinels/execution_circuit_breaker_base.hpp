@@ -2,23 +2,15 @@
 
 #include <atomic>
 #include <chrono>
+#include <exception.hpp>
 #include <functional>
 #include <future>
 #include "circuit_breaker_base.hpp"
 #include "circuit_breaker_exception.hpp"
 
-// make sure min() and max() are not defined
-#ifdef min
-#	undef min
-#endif
-#ifdef max
-#	undef max
-#endif
+namespace com::rbx::sentinels {
 
-// this is an abstract class.
-// it is used to define the interface for a circuit breaker.
-
-class execution_circuit_breaker_base : public circuit_breaker_base
+class execution_circuit_breaker_base : public com::rbx::sentinels::circuit_breaker_base
 {
 private:
 	std::chrono::system_clock::time_point _next_retry;
@@ -43,7 +35,7 @@ private:
 		{
 			test();
 		}
-		catch (circuit_breaker_exception& e)
+		catch (com::rbx::sentinels::circuit_breaker_exception& e)
 		{
 			if (!is_time_for_retry() || !should_retry())
 			{
@@ -53,7 +45,7 @@ private:
 	}
 
 protected:
-	virtual auto should_trip(std::exception& e) -> bool = 0;
+	virtual auto should_trip(com::exception& e) -> bool = 0;
 
 public:
 	auto execute(const std::function<void()> action) -> void
@@ -64,7 +56,7 @@ public:
 		{
 			action();
 		}
-		catch (std::exception& e)
+		catch (com::exception& e)
 		{
 			if (should_trip(e))
 			{
@@ -91,7 +83,7 @@ public:
 			auto future = action();
 			future.wait();
 		}
-		catch (std::exception& e)
+		catch (com::exception& e)
 		{
 			if (should_trip(e))
 			{
@@ -118,3 +110,5 @@ public:
 		return flag;
 	}
 };
+
+}  // namespace com::rbx::sentinels

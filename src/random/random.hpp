@@ -1,10 +1,12 @@
 #pragma once
 
+#include <argument_null_exception.hpp>
+#include <argument_out_of_range_exception.hpp>
 #include <climits>
 #include <cmath>
 #include <ctime>
-#include "argument_null_exception.hpp"
-#include "argument_out_of_range_exception.hpp"
+
+namespace com {
 
 /**
  * @brief This is named random_impl to avoid a name collision with the POSIX random function.
@@ -183,7 +185,7 @@ public:
 	{
 		if (minValue > maxValue)
 		{
-			throw argument_out_of_range_exception("minValue");
+			throw com::argument_out_of_range_exception("minValue");
 		}
 
 		int64_t range = (int64_t)maxValue - minValue;
@@ -206,7 +208,7 @@ public:
 	{
 		if (maxValue < 0)
 		{
-			throw argument_out_of_range_exception("maxValue");
+			throw com::argument_out_of_range_exception("maxValue");
 		}
 
 		return (int32_t)(sample() * maxValue);
@@ -229,7 +231,7 @@ public:
 	{
 		if (buffer == nullptr)
 		{
-			throw argument_null_exception("buffer");
+			throw com::argument_null_exception("buffer");
 		}
 
 		for (int32_t i = 0; i < sizeof(buffer) / sizeof(buffer[0]); i++)
@@ -238,3 +240,5 @@ public:
 		}
 	}
 };
+
+}  // namespace com

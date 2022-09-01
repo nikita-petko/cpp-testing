@@ -1,19 +1,25 @@
+#include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <boost/core/demangle.hpp>
-#include "circuit_breaker.hpp"
-#include "circuit_breaker_exception.hpp"
-#include "exception.hpp"
-#include "execution_circuit_breaker.hpp"
-#include "execution_plan.hpp"
-#include "exponential_backoff.hpp"
-#include "inttypes.h"
-#include "pipeline_handler.hpp"
-#include "random.hpp"
+#include <circuit_breaker.hpp>
+#include <circuit_breaker_exception.hpp>
+#include <exception.hpp>
+#include <execution_circuit_breaker.hpp>
+#include <execution_plan.hpp>
+#include <exponential_backoff.hpp>
+#include <pipeline_handler.hpp>
+#include <random.hpp>
 
 #if !defined(_WIN32)
 #	include <unistd.h>
 #endif
+
+namespace com::testing {
+
+using namespace com;
+using namespace com::rbx::pipeline;
+using namespace com::rbx::sentinels;
 
 class test_handler : public pipeline_handler<int, int>
 {
@@ -132,14 +138,14 @@ main([[maybe_unused]] int32_t argc, [[maybe_unused]] const char* argv[], [[maybe
 
 	execution_circuit_breaker* ecb = new execution_circuit_breaker(
 		"ecb",
-		[](std::exception& e) { return true; },
+		[](exception& e) { return true; },
 		[]() -> time_t { return 1000; });
 
 	try
 	{
 		ecb->execute([]() -> void { throw exception("test"); });
 	}
-	catch (std::exception& e)
+	catch (exception& e)
 	{
 	}
 
@@ -158,7 +164,8 @@ main([[maybe_unused]] int32_t argc, [[maybe_unused]] const char* argv[], [[maybe
 
 	try
 	{
-		throw argument_out_of_range_exception("HAHHAHAH", 10, "HAAAA");
+		auto x = new exception("YAYYYY");
+		throw exception("HAHHAHAH", x);
 	}
 	catch (exception& e)
 	{
@@ -170,4 +177,12 @@ main([[maybe_unused]] int32_t argc, [[maybe_unused]] const char* argv[], [[maybe
 	delete cb;
 
 	return 0;
+}
+
+}  // namespace com::testing
+
+auto
+main([[maybe_unused]] int32_t argc, [[maybe_unused]] const char* argv[], [[maybe_unused]] const char* envp[]) -> int32_t
+{
+	com::testing::main(argc, argv, envp);
 }

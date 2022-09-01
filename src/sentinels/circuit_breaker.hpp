@@ -3,7 +3,9 @@
 #include <string>
 #include "circuit_breaker_base.hpp"
 
-class circuit_breaker : public circuit_breaker_base
+namespace com::rbx::sentinels {
+
+class circuit_breaker : public com::rbx::sentinels::circuit_breaker_base
 {
 private:
 	std::string _name;
@@ -14,3 +16,5 @@ public:
 
 	auto get_name() const -> const std::string& override { return _name; }
 };
+
+}  // namespace com::rbx::sentinels

@@ -146,16 +146,16 @@ local function _find_vcpkg_binary(triple, port, binary)
 end 
 
 local function main_windows() 
-    zip_path = "build/cpp-testing-win64.zip"
+    zip_path = "build/com.testing-win64.zip"
 
-    _build("cpp-testing", "x64", false)
+    _build("com.testing", "x64", false)
 
     local mode = "release"
     if is_mode("debug") then
         mode = "debug"
     end
 
-    local output_base_name = "build/windows/x64/" .. mode .. "/cpp-testing"
+    local output_base_name = "build/windows/x64/" .. mode .. "/com.testing"
 
     local exe_path = output_base_name .. ".exe"
     local pdb_path = output_base_name .. ".pdb"
@@ -170,32 +170,32 @@ local function main_windows()
 end
 
 local function main_linux()
-    zip_path = "build/cpp-testing-linux.zip"
+    zip_path = "build/com.testing-linux.zip"
 
-    _build("cpp-testing", "x86_64")
+    _build("com.testing", "x86_64")
 
     local mode = "release"
     if is_mode("debug") then
         mode = "debug"
     end
 
-    local output_base_name = "build/linux/x86_64/" .. mode .. "/cpp-testing"
+    local output_base_name = "build/linux/x86_64/" .. mode .. "/com.testing"
     local zip_paths = {output_base_name}
     _zip(false, zip_path, table.unpack(zip_paths))
 end
 
 local function main_mac()
     -- Build and universalify
-    _build("cpp-testing", "x86_64", false, "--target_minver=10.15")
-    _build("cpp-testing", "arm64", false, "--target_minver=10.15")
+    _build("com.testing", "x86_64", false, "--target_minver=10.15")
+    _build("com.testing", "arm64", false, "--target_minver=10.15")
 
     os.mkdir("build/macosx/universal/release/")
 	local ret = _exec(
         "lipo",
         "-create",
-        "-output", "build/macosx/universal/release/cpp-testing",
-        "build/macosx/x86_64/release/cpp-testing",
-        "build/macosx/arm64/release/cpp-testing"
+        "-output", "build/macosx/universal/release/com.testing",
+        "build/macosx/x86_64/release/com.testing",
+        "build/macosx/arm64/release/com.testing"
     )
     if ret > 0 then
         raise("Failed creating universal binary")
@@ -204,8 +204,8 @@ local function main_mac()
     -- Zip
     _zip(
         false,
-        "build/cpp-testing-macos.zip",
-        "build/macosx/universal/release/cpp-testing",
+        "build/com.testing-macos.zip",
+        "build/macosx/universal/release/com.testing",
         crashpad_handler_path
     )
 end

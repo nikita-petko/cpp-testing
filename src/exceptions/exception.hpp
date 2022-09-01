@@ -1,10 +1,10 @@
 #pragma once
 
 #include <boost/stacktrace.hpp>
+#include <boost/type_index.hpp>
 #include <exception>
-#include <memory>
+#include <format.hpp>
 #include <string>
-#include "format.hpp"
 
 #ifdef _WIN32
 #	define NEWLINE "\r\n"
@@ -14,11 +14,13 @@
 #	define NEWLINE "\n"  // Mac OS X uses \n
 #endif
 
+namespace com {
+
 class exception : public std::exception
 {
 private:
-	std::shared_ptr<const exception> _inner_exception;
-	boost::stacktrace::stacktrace*	 _stacktrace;
+	com::exception*				   _inner_exception = nullptr;
+	boost::stacktrace::stacktrace* _stacktrace;
 
 protected:
 	std::string _message;
@@ -28,50 +30,65 @@ protected:
 		auto message	= get_message();
 		auto stacktrace = *_stacktrace;
 		auto stack		= boost::stacktrace::to_string(stacktrace);
+		auto this_type	= boost::typeindex::type_id_runtime(*this).pretty_name();
+
+		this_type.erase(0, 6);
 
 		// check if there is an inner exception
-		if (_inner_exception)
+		if (_inner_exception != nullptr)
 		{
 			auto inner_message = _inner_exception->what();
 
 			// like this:
-			return format("%s ---> " NEWLINE "%s ---> " NEWLINE "%s", message.c_str(), inner_message, stack.c_str());
+			return com::format("%s: %s" NEWLINE "%s ------------> " NEWLINE "%s",
+							   this_type.c_str(),
+							   message.c_str(),
+							   inner_message,
+							   stack.c_str());
 		}
 		else
 		{
-			return format("%s" NEWLINE "%s", message.c_str(), stack.c_str());
+			return com::format("%s: %s" NEWLINE "%s", this_type.c_str(), message.c_str(), stack.c_str());
 		}
 	}
 
 public:
 	exception()
-	: _inner_exception(NULL)
-	, _message(format("Exception of type '%s' was thrown.", typeid(*this).name()))
+	: _message(format("Exception of type '%s' was thrown.", typeid(*this).name()))
 	, _stacktrace(new boost::stacktrace::stacktrace(2, static_cast<size_t>(-1)))
-	{
-	}
-
-	exception(const std::exception& e)
-	: _inner_exception(NULL)
-	, _message(e.what())
-	, _stacktrace(new boost::stacktrace::stacktrace(2, static_cast<size_t>(-1)))
+	, _inner_exception(nullptr)
 	{
 	}
 	exception(std::string message)
-	: _inner_exception(NULL)
-	, _message(message)
+	: _message(message)
 	, _stacktrace(new boost::stacktrace::stacktrace(2, static_cast<size_t>(-1)))
+	, _inner_exception(nullptr)
 	{
 	}
-	exception(std::string message, const exception* inner_exception)
-	: _inner_exception(inner_exception)
-	, _message(message)
+	exception(const std::exception& e)
+	: _message(e.what())
 	, _stacktrace(new boost::stacktrace::stacktrace(2, static_cast<size_t>(-1)))
+	, _inner_exception(nullptr)
+	{
+	}
+	exception(std::string message, com::exception* inner_exception)
+	: _message(message)
+	, _stacktrace(new boost::stacktrace::stacktrace(2, static_cast<size_t>(-1)))
+	, _inner_exception(inner_exception)
 	{
 	}
 
+	[[nodiscard]] auto what() const noexcept -> const char* override
+	{
+		auto  message = _construct_message();
+		char* ptr	  = new char[message.length() + 1];
+		strcpy(ptr, message.c_str());
+
+		return ptr;
+	}
 	virtual auto get_message() const noexcept -> const std::string { return _message; }
-	auto		 get_inner_exception() const noexcept -> const std::shared_ptr<const exception> { return _inner_exception; }
 	auto		 get_stacktrace() const noexcept -> const boost::stacktrace::stacktrace* { return _stacktrace; }
-	auto		 what() const noexcept -> const char* override { return _construct_message().c_str(); }
+	auto		 get_inner_exception() const noexcept -> const com::exception* { return _inner_exception; }
 };
+
+}  // namespace com

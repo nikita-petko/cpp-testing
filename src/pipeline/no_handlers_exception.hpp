@@ -1,7 +1,11 @@
 #pragma once
 
-#include "exception.hpp"
+#include <exception.hpp>
 
-class no_handlers_exception : public exception
+namespace com::rbx::pipeline {
+
+class no_handlers_exception : public com::exception
 {
 };
+
+}  // namespace com::rbx::pipeline

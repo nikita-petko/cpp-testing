@@ -56,11 +56,11 @@ jobs:
         env:
           VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-      - name: Upload cpp-testing-win64
+      - name: Upload com.testing-win64
         uses: actions/upload-artifact@v3
         with:
-          name: cpp-testing-win64
-          path: build/cpp-testing-win64.zip
+          name: com.testing-win64
+          path: build/com.testing-win64.zip
 
   bundle-linux:
     runs-on: ubuntu-latest
@@ -103,11 +103,11 @@ jobs:
         env:
           VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-      - name: Upload cpp-testing-linux
+      - name: Upload com.testing-linux
         uses: actions/upload-artifact@v3
         with:
-          name: cpp-testing-linux
-          path: build/cpp-testing-linux.zip
+          name: com.testing-linux
+          path: build/com.testing-linux.zip
 
   bundle-macos:
     runs-on: macos-latest
@@ -145,11 +145,11 @@ jobs:
         env:
           VCPKG_ROOT: ${{ github.workspace }}/.vcpkg
 
-      - name: Upload cpp-testing-macos
+      - name: Upload com.testing-macos
         uses: actions/upload-artifact@v3
         with:
-          name: cpp-testing-macos
-          path: build/cpp-testing-macos.zip
+          name: com.testing-macos
+          path: build/com.testing-macos.zip
 
   create-release:
     runs-on: ubuntu-latest
@@ -163,19 +163,19 @@ jobs:
       - name: Download Linux artifacts
         uses: actions/download-artifact@v1
         with:
-          name: cpp-testing-linux
+          name: com.testing-linux
           path: linux
 
       - name: Download Windows artifacts
         uses: actions/download-artifact@v1
         with:
-          name: cpp-testing-win64
+          name: com.testing-win64
           path: win64
 
       - name: Download MacOS artifacts
         uses: actions/download-artifact@v1
         with:
-          name: cpp-testing-macos
+          name: com.testing-macos
           path: macos
 
       - name: Create Release
@@ -189,6 +189,6 @@ jobs:
           draft: false
           prerelease: ${{ github.ref_name != 'master' }}
           files: |
-            linux/cpp-testing-linux.zip
-            win64/cpp-testing-win64.zip
-            macos/cpp-testing-macos.zip
+            linux/com.testing-linux.zip
+            win64/com.testing-win64.zip
+            macos/com.testing-macos.zip

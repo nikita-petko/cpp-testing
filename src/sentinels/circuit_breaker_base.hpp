@@ -7,6 +7,8 @@
 // this is an abstract class.
 // it is used to define the interface for a circuit breaker.
 
+namespace com::rbx::sentinels {
+
 class circuit_breaker_base
 {
 private:
@@ -45,7 +47,7 @@ public:
 	{
 		if (is_tripped())
 		{
-			throw circuit_breaker_exception(get_name(), _trip_date);
+			throw com::rbx::sentinels::circuit_breaker_exception(get_name(), _trip_date);
 		}
 	}
 
@@ -62,3 +64,5 @@ public:
 		return flag;
 	}
 };
+
+}  // namespace com::rbx::sentinels

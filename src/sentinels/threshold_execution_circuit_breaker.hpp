@@ -2,14 +2,18 @@
 
 #include <atomic>
 #include <chrono>
-#include <exception>
+#include <exception.hpp>
 #include <string>
 #include "execution_circuit_breaker_base.hpp"
 
-class threshold_execution_circuit_breaker : public execution_circuit_breaker_base
+namespace com::rbx::sentinels {
+
+class threshold_execution_circuit_breaker : public com::rbx::sentinels::execution_circuit_breaker_base
 {
 private:
-	typedef bool (*failure_detector_func)(std::exception& e);
+	typedef com::rbx::sentinels::threshold_execution_circuit_breaker self;
+
+	typedef bool (*failure_detector_func)(com::exception& e);
 	typedef time_t (*retry_interval_func)();
 	typedef int (*exception_count_for_tripping_func)();
 	typedef time_t (*exception_interval_for_tripping_func)();
@@ -44,18 +48,15 @@ private:
 	{
 	}
 
+	static std::chrono::system_clock::time_point _default_utc_now() { return std::chrono::system_clock::now(); }
+
 public:
 	threshold_execution_circuit_breaker(std::string							 name,
 										failure_detector_func				 failure_detector,
 										retry_interval_func					 retry_interval,
 										exception_count_for_tripping_func	 exception_count_for_tripping,
 										exception_interval_for_tripping_func exception_interval_for_tripping)
-	: threshold_execution_circuit_breaker(name,
-										  failure_detector,
-										  retry_interval,
-										  exception_count_for_tripping,
-										  exception_interval_for_tripping,
-										  []() { return std::chrono::system_clock::now(); })
+	: self(name, failure_detector, retry_interval, exception_count_for_tripping, exception_interval_for_tripping, _default_utc_now)
 	{
 	}
 
@@ -74,7 +75,7 @@ private:
 	}
 
 protected:
-	auto should_trip(std::exception& e) -> bool override
+	auto should_trip(com::exception& e) -> bool override
 	{
 		if (_failure_detector(e))
 		{
@@ -92,3 +93,5 @@ protected:
 		return false;
 	}
 };
+
+}  // namespace com::rbx::sentinels

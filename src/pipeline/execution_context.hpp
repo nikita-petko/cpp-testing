@@ -1,5 +1,7 @@
 #pragma once
 
+namespace com::rbx::pipeline {
+
 template<typename TInput, typename TOutput>
 class execution_context
 {
@@ -14,3 +16,5 @@ public:
 	TOutput get_output() const noexcept { return _output; }
 	void	set_output(TOutput value) noexcept { _output = value; }
 };
+
+}  // namespace com::rbx::pipeline

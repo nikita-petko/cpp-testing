@@ -5,6 +5,8 @@
 #include <functional>
 #include <thread>
 
+namespace com::rbx::sentinels {
+
 class service_sentinel
 {
 private:
@@ -71,3 +73,5 @@ public:
 		delete _io_context;
 	}
 };
+
+}  // namespace com::rbx::sentinels

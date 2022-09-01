@@ -1,6 +1,6 @@
-target("cpp-testing")
+target("com.testing")
     set_kind("binary")
-    add_headerfiles("**.h", "**.hpp")
+    add_headerfiles("**.hpp")
     add_files("**.cc")
     add_includedirs(".")
     add_includedirs("./pipeline")
@@ -9,7 +9,7 @@ target("cpp-testing")
     add_includedirs("./strings")
     add_includedirs("./exceptions")
 	
-	add_packages("vcpkg::asio", "vcpkg::boost-stacktrace")
+	add_packages("vcpkg::asio", "vcpkg::boost-stacktrace", "vcpkg::boost-type-index")
 	
 	set_symbols("debug")
 	

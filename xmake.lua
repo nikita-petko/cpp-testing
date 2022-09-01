@@ -1,4 +1,4 @@
-add_requires("vcpkg::asio", "vcpkg::boost-stacktrace")
+add_requires("vcpkg::asio", "vcpkg::boost-stacktrace", "vcpkg::boost-type-index")
 
 add_rules("mode.debug", "mode.release")
 
