@@ -32,7 +32,10 @@ protected:
 		auto stack		= boost::stacktrace::to_string(stacktrace);
 		auto this_type	= boost::typeindex::type_id_runtime(*this).pretty_name();
 
+#ifdef _WIN32
+		// Windows case here for adding "class " to start of typeid.
 		this_type.erase(0, 6);
+#endif
 
 		// check if there is an inner exception
 		if (_inner_exception != nullptr)

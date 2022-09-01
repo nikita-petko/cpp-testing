@@ -164,12 +164,13 @@ main([[maybe_unused]] int32_t argc, [[maybe_unused]] const char* argv[], [[maybe
 
 	try
 	{
-		auto x = new exception("YAYYYY");
-		throw exception("HAHHAHAH", x);
+		auto x = new exception("YAYYYYAAA");
+		auto y = new exception("YAYYYY", x);
+		throw exception("HAHHAHAH", y);
 	}
 	catch (exception& e)
 	{
-		printf("%s\n", e.what());
+		printf("%s\n", com::exception("Other", &e).what());
 	}
 
 	delete plan;
